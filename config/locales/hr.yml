@@ -1,0 +1,9 @@
+hr:
+  wiki_sidebar:
+    title: "Stranice"
+    filter_placeholder: "Filtriraj stranice..."
+    expand_all: "Proširi sve"
+    collapse_all: "Sažmi sve"
+    toggle_sidebar: "Prikaži/sakrij bočnu traku"
+    no_pages: "Nema wiki stranica."
+  permission_view_wiki_sidebar: "Prikaz wiki bočne trake"

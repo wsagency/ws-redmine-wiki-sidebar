@@ -1,0 +1,11 @@
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    if (typeof WikiSidebar !== 'undefined') {
+      WikiSidebar.init({
+        projectId: '<%= j project_id.to_s %>',
+        sidebarUrl: '<%= j sidebar_url.to_s %>',
+        currentPage: '<%= j current_page.to_s %>'
+      });
+    }
+  });
+</script>

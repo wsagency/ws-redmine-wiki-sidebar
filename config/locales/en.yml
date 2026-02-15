@@ -1,0 +1,9 @@
+en:
+  wiki_sidebar:
+    title: "Pages"
+    filter_placeholder: "Filter pages..."
+    expand_all: "Expand all"
+    collapse_all: "Collapse all"
+    toggle_sidebar: "Toggle sidebar"
+    no_pages: "No wiki pages found."
+  permission_view_wiki_sidebar: "View wiki sidebar"
