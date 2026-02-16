@@ -1,4 +1,7 @@
 en:
+  wiki_sidebar_enabled: "Enable wiki sidebar"
+  wiki_sidebar_default_width: "Default width"
+  wiki_sidebar_width_hint: "200–500 pixels"
   wiki_sidebar:
     title: "Pages"
     filter_placeholder: "Filter pages..."

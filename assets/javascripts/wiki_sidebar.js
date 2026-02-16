@@ -102,6 +102,9 @@
           } catch (e) {
             console.error('WikiSidebar: Failed to parse response', e);
           }
+        } else {
+          // Silently fail — don't break the page
+          console.warn('WikiSidebar: HTTP ' + xhr.status);
         }
       };
       xhr.onerror = function() {
@@ -112,14 +115,14 @@
 
     render: function(data) {
       var self = this;
-      var wikiContent = document.getElementById('content');
-      if (!wikiContent) return;
+      var contentDiv = document.getElementById('content');
+      if (!contentDiv) return;
 
       // Auto-expand path to current page
       this.autoExpandPath(data.pages, data.current_page);
 
       // Build sidebar DOM
-      var sidebar = el('div', { className: 'wiki-sidebar' + (this.sidebarVisible ? '' : ' wiki-sidebar--hidden'), id: 'wiki-sidebar' });
+      var sidebar = el('div', { className: 'wiki-sidebar', id: 'wiki-sidebar' });
       sidebar.style.width = this.sidebarWidth + 'px';
 
       // Header with toggle, search, expand/collapse buttons
@@ -136,23 +139,27 @@
       this.setupResize(handle, sidebar);
       sidebar.appendChild(handle);
 
-      // Wrap existing content
-      var wrapper = el('div', { className: 'wiki-with-sidebar' });
-      wikiContent.parentNode.insertBefore(wrapper, wikiContent);
+      // === Layout approach: keep #content in place, add flex inside ===
+      // Move all existing children of #content into a wrapper div
+      var contentInner = el('div', { className: 'wiki-sidebar__content-inner' });
+      while (contentDiv.firstChild) {
+        contentInner.appendChild(contentDiv.firstChild);
+      }
 
-      wrapper.appendChild(sidebar);
+      // Add sidebar + content wrapper to #content
+      contentDiv.appendChild(sidebar);
+      contentDiv.appendChild(contentInner);
 
-      var contentWrap = el('div', { className: 'wiki-sidebar-content' });
-      wrapper.appendChild(contentWrap);
-      contentWrap.appendChild(wikiContent);
+      // Make #content a flex container
+      contentDiv.classList.add('wiki-has-sidebar');
 
-      // Toggle button in wiki toolbar
-      this.addToggleButton(sidebar);
+      // Toggle button in contextual area
+      this.addToggleButton(sidebar, contentDiv);
 
       // Apply initial visibility
       if (!this.sidebarVisible) {
         sidebar.classList.add('wiki-sidebar--hidden');
-        wrapper.classList.add('wiki-sidebar--collapsed');
+        contentDiv.classList.add('wiki-sidebar--collapsed');
       }
     },
 
@@ -397,11 +404,11 @@
       });
     },
 
-    addToggleButton: function(sidebar) {
+    addToggleButton: function(sidebar, contentDiv) {
       var self = this;
 
-      // Add toggle button to contextual area or wiki toolbar
-      var toolbar = document.querySelector('.contextual') || document.querySelector('#content > .wiki');
+      // Find the contextual area (inside the content inner wrapper now)
+      var toolbar = contentDiv.querySelector('.wiki-sidebar__content-inner .contextual');
       if (!toolbar) return;
 
       var btn = el('a', {
@@ -414,8 +421,7 @@
           self.sidebarVisible = !self.sidebarVisible;
           saveJSON(storageKey(self.config.projectId, 'visible'), self.sidebarVisible);
           sidebar.classList.toggle('wiki-sidebar--hidden', !self.sidebarVisible);
-          var wrapper = sidebar.closest('.wiki-with-sidebar');
-          if (wrapper) wrapper.classList.toggle('wiki-sidebar--collapsed', !self.sidebarVisible);
+          contentDiv.classList.toggle('wiki-sidebar--collapsed', !self.sidebarVisible);
         }
       });
 

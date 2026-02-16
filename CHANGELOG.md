@@ -2,13 +2,22 @@
 
 All notable changes to ws-redmine-wiki-sidebar will be documented in this file.
 
+## [1.1.0] - 2026-02-16
+
+### Changed
+- Refactored layout: sidebar renders INSIDE `#content` as flex child — no DOM reparenting, preserves Redmine CSS
+- Added plugin settings page with enable/disable toggle and default sidebar width
+- Version bump to 1.1.0
+
+### Fixed
+- Broken page layout after saving wiki pages — `#content` was being moved out of its parent, breaking Redmine CSS structure
+
 ## [1.0.2] - 2026-02-16
 
 ### Fixed
-- Replace `page.slug` with `page.title` — Redmine 6.1 WikiPage has no `slug` attribute, causing `NoMethodError` crash on wiki pages
-- Remove `accept_api_auth :index` from controller — it caused Redmine to send `WWW-Authenticate: Basic` header on 401 for JSON requests, triggering browser's native Basic Auth dialog
-- Replace generic `authorize` filter with `check_wiki_view_permission` that checks `:view_wiki_pages` and returns empty JSON on failure (no popup)
-- Remove `format: :json` from sidebar URL in hooks — use `Accept` header instead
+- Replace `page.slug` with `page.title` — Redmine 6.1 WikiPage has no `slug` attribute
+- Remove `accept_api_auth :index` — prevented browser Basic Auth popup on AJAX calls
+- Replace generic `authorize` with `check_wiki_view_permission` (checks `:view_wiki_pages`)
 
 ## [1.0.0] - 2026-02-14
 
@@ -18,7 +27,5 @@ All notable changes to ws-redmine-wiki-sidebar will be documented in this file.
 - Search/filter input for quick page lookup
 - Auto-expand path to current page
 - Resizable sidebar with drag handle (200–500px)
-- Mobile-responsive: hidden by default on small screens
 - Toggle button to show/hide sidebar
-- Expand all / Collapse all buttons
 - Integration with ws-redmine-wiki-acl (filters restricted pages if installed)

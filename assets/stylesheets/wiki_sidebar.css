@@ -1,16 +1,30 @@
 /* Wiki Sidebar — Redmine Wiki Sidebar Plugin
  * Adds a docs-style hierarchical sidebar to wiki pages.
+ * Layout: sidebar inserted INSIDE #content as flex child, keeping
+ * #content in its original DOM position for Redmine CSS compatibility.
  */
 
-/* --- Layout wrapper --- */
+/* --- Layout: #content becomes flex container when sidebar active --- */
 
-.wiki-with-sidebar {
+#content.wiki-has-sidebar {
   display: flex;
-  min-height: calc(100vh - 120px);
+  align-items: stretch;
+  gap: 0;
+  padding: 0;
 }
 
-.wiki-with-sidebar.wiki-sidebar--collapsed {
+#content.wiki-has-sidebar.wiki-sidebar--collapsed {
   display: block;
+  padding: 8px 12px 8px 12px;
+}
+
+/* --- Content inner (original #content children) --- */
+
+.wiki-sidebar__content-inner {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 16px 16px 16px;
+  overflow: hidden; /* contain floats */
 }
 
 /* --- Sidebar panel --- */
@@ -37,14 +51,6 @@
   opacity: 0;
   pointer-events: none;
   position: absolute;
-}
-
-/* --- Content area --- */
-
-.wiki-sidebar-content {
-  flex: 1;
-  min-width: 0;
-  padding: 0 20px;
 }
 
 /* --- Header --- */
@@ -226,18 +232,17 @@
 .wiki-sidebar__children::before {
   content: '';
   position: absolute;
-  left: calc(var(--depth, 0) * 16px + 19px);
   top: 0;
   bottom: 0;
   width: 1px;
   background: #e0e0e0;
 }
 
+.wiki-sidebar__item[data-depth="0"] > .wiki-sidebar__children::before { left: 19px; }
 .wiki-sidebar__item[data-depth="1"] > .wiki-sidebar__children::before { left: 35px; }
 .wiki-sidebar__item[data-depth="2"] > .wiki-sidebar__children::before { left: 51px; }
 .wiki-sidebar__item[data-depth="3"] > .wiki-sidebar__children::before { left: 67px; }
 .wiki-sidebar__item[data-depth="4"] > .wiki-sidebar__children::before { left: 83px; }
-.wiki-sidebar__item[data-depth="0"] > .wiki-sidebar__children::before { left: 19px; }
 
 /* --- Resize handle --- */
 
@@ -287,9 +292,7 @@
     border-bottom-color: #444;
   }
 
-  .wiki-sidebar__title {
-    color: #e0e0e0;
-  }
+  .wiki-sidebar__title { color: #e0e0e0; }
 
   .wiki-sidebar__btn {
     border-color: #555;
@@ -307,54 +310,18 @@
     color: #e0e0e0;
   }
 
-  .wiki-sidebar__search:focus {
-    border-color: #5a9fd4;
-    box-shadow: 0 0 0 2px rgba(90, 159, 212, 0.3);
-  }
-
-  .wiki-sidebar__row {
-    color: #ddd;
-  }
-
-  .wiki-sidebar__row:hover {
-    background: #3a3a3a;
-  }
-
-  .wiki-sidebar__row--active {
-    background: #2a4a6b;
-  }
-
-  .wiki-sidebar__row--active:hover {
-    background: #345a7e;
-  }
-
-  .wiki-sidebar__toggle {
-    color: #999;
-  }
-
-  .wiki-sidebar__toggle:hover {
-    color: #ddd;
-  }
-
-  .wiki-sidebar__children::before {
-    background: #444;
-  }
-
-  .wiki-sidebar__resize-handle:hover {
-    background: #5a9fd4;
-  }
-
-  .wiki-sidebar__toggle-btn {
-    color: #aaa;
-  }
-
-  .wiki-sidebar__toggle-btn:hover {
-    background: #3a3a3a;
-    color: #ddd;
-  }
+  .wiki-sidebar__row { color: #ddd; }
+  .wiki-sidebar__row:hover { background: #3a3a3a; }
+  .wiki-sidebar__row--active { background: #2a4a6b; }
+  .wiki-sidebar__row--active:hover { background: #345a7e; }
+  .wiki-sidebar__toggle { color: #999; }
+  .wiki-sidebar__toggle:hover { color: #ddd; }
+  .wiki-sidebar__children::before { background: #444; }
+  .wiki-sidebar__toggle-btn { color: #aaa; }
+  .wiki-sidebar__toggle-btn:hover { background: #3a3a3a; color: #ddd; }
 }
 
-/* --- Redmine dark theme class-based (for themes that use body classes) --- */
+/* --- Redmine dark theme class-based --- */
 
 body.theme-dark .wiki-sidebar,
 body[data-theme="dark"] .wiki-sidebar {
@@ -368,24 +335,16 @@ body[data-theme="dark"] .wiki-sidebar__header {
 }
 
 body.theme-dark .wiki-sidebar__title,
-body[data-theme="dark"] .wiki-sidebar__title {
-  color: #e0e0e0;
-}
+body[data-theme="dark"] .wiki-sidebar__title { color: #e0e0e0; }
 
 body.theme-dark .wiki-sidebar__row,
-body[data-theme="dark"] .wiki-sidebar__row {
-  color: #ddd;
-}
+body[data-theme="dark"] .wiki-sidebar__row { color: #ddd; }
 
 body.theme-dark .wiki-sidebar__row:hover,
-body[data-theme="dark"] .wiki-sidebar__row:hover {
-  background: #3a3a3a;
-}
+body[data-theme="dark"] .wiki-sidebar__row:hover { background: #3a3a3a; }
 
 body.theme-dark .wiki-sidebar__row--active,
-body[data-theme="dark"] .wiki-sidebar__row--active {
-  background: #2a4a6b;
-}
+body[data-theme="dark"] .wiki-sidebar__row--active { background: #2a4a6b; }
 
 body.theme-dark .wiki-sidebar__search,
 body[data-theme="dark"] .wiki-sidebar__search {
@@ -395,9 +354,7 @@ body[data-theme="dark"] .wiki-sidebar__search {
 }
 
 body.theme-dark .wiki-sidebar__children::before,
-body[data-theme="dark"] .wiki-sidebar__children::before {
-  background: #444;
-}
+body[data-theme="dark"] .wiki-sidebar__children::before { background: #444; }
 
 /* --- Mobile responsive --- */
 
@@ -415,11 +372,11 @@ body[data-theme="dark"] .wiki-sidebar__children::before {
     margin-left: -280px;
   }
 
-  .wiki-sidebar-content {
-    padding: 0 10px;
+  #content.wiki-has-sidebar {
+    display: block;
   }
 
-  .wiki-with-sidebar {
-    display: block;
+  .wiki-sidebar__content-inner {
+    padding: 8px;
   }
 }

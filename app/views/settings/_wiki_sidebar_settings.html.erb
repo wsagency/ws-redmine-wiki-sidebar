@@ -1,0 +1,16 @@
+<table class="list">
+  <tr>
+    <td class="name"><label for="settings_enabled"><%= l(:wiki_sidebar_enabled) %></label></td>
+    <td>
+      <%= hidden_field_tag 'settings[enabled]', '0' %>
+      <%= check_box_tag 'settings[enabled]', '1', @settings['enabled'] != '0', id: 'settings_enabled' %>
+    </td>
+  </tr>
+  <tr>
+    <td class="name"><label for="settings_default_width"><%= l(:wiki_sidebar_default_width) %></label></td>
+    <td>
+      <%= text_field_tag 'settings[default_width]', @settings['default_width'] || '280', size: 5 %> px
+      <em class="info"><%= l(:wiki_sidebar_width_hint) %></em>
+    </td>
+  </tr>
+</table>
