@@ -21,7 +21,7 @@ module RedmineWikiSidebar
         locals: {
           project_id: project.identifier,
           sidebar_url: Rails.application.routes.url_helpers.wiki_sidebar_path(project),
-          current_page: page&.slug
+          current_page: page&.title
         }
       })
     end

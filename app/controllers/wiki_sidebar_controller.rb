@@ -47,8 +47,8 @@ class WikiSidebarController < ApplicationController
       (pages_by_parent[parent_id] || []).sort_by { |p| p.title.downcase }.map do |page|
         {
           title: page.title,
-          slug: page.slug,
-          url: project_wiki_page_path(@project, page.slug),
+          slug: page.title,
+          url: project_wiki_page_path(@project, page.title),
           children: build_children.call(page.id)
         }
       end
