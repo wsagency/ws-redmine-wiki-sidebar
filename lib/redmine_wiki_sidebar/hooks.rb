@@ -20,7 +20,7 @@ module RedmineWikiSidebar
         partial: 'wiki_sidebar/sidebar_init',
         locals: {
           project_id: project.identifier,
-          sidebar_url: Rails.application.routes.url_helpers.wiki_sidebar_path(project, format: :json),
+          sidebar_url: Rails.application.routes.url_helpers.wiki_sidebar_path(project),
           current_page: page&.slug
         }
       })
